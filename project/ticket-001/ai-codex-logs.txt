@@ -1,0 +1,6 @@
+2026-08-14 bootstrap evidence
+- target directory was absent before initialization
+- goal governance adoption preflight: 38 creates, 0 conflicts
+- adopted wellmanifest/new-project 0.17.0 at 4d0a61837245b2906ce19c75c050fea1bc12adf2
+- managed governance files: 34
+- no user-* participant file created
