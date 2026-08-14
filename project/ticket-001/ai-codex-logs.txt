@@ -8,3 +8,7 @@
 - public remote: https://github.com/wellmanifest/performance
 - delete_branch_on_merge: true
 - delivery slices allocated: ticket-002, ticket-003, ticket-004
+- JSON intent parse: passed for ticket-001 through ticket-004
+- governance adoption check: up-to-date
+- governance gate at 5617e7e: GOV-PASS (0 errors, 0 warnings)
+- diff whitespace check: passed
