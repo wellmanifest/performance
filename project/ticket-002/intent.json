@@ -1,0 +1,26 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-002",
+  "summary": "Define Performance v1 contracts and reference profiles",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P1",
+    "origin": "requested"
+  },
+  "allowedPaths": [
+    "project/ticket-002/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "docs/PERFORMANCE.md",
+    "docs/ARCHITECTURE.md",
+    "docs/LOGIC_FLOW.md",
+    "docs/performance-plan.schema.v1.json",
+    "docs/performance-plan.v1.gbnf"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": ["ticket-001"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
