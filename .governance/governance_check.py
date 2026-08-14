@@ -284,7 +284,7 @@ def approval_evidence_config_valid(value: Any) -> bool:
         ]
         and value.get("reviewVerificationMethod") == "github-api-allowlist"
         and value.get("signedAttestationPredicateType")
-        == "https://wellmanifest.dev/attestations/validator/v1"
+        == "https://wellmanifest.com/attestations/validator/v1"
     )
 
 
@@ -2220,7 +2220,7 @@ def approval_authority_valid(
     approval_config = manifest.get("approvalEvidence") or {}
     expected_predicate = approval_config.get(
         "signedAttestationPredicateType",
-        "https://wellmanifest.dev/attestations/validator/v1",
+        "https://wellmanifest.com/attestations/validator/v1",
     )
     return (
         actor["type"] in {"Bot", "Workflow"}
