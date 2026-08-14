@@ -5,11 +5,83 @@
   "workstream": "governance",
   "classification": {
     "kind": "SERVICE",
-    "priority": "P2",
-    "origin": "health"
+    "priority": "P1",
+    "origin": "requested"
   },
-  "allowedPaths": ["project/ticket-001/**", "TODO.md", "project/TICKETS.md"],
-  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "delivery": {
+    "acceptedBaseSha": "1d04a9ae9bfee0cd72fb7e55d2c60483a9769357",
+    "targetBranch": "main",
+    "outcome": "The standalone repository has immutable governance, bounded tickets and an auditable plan for Performance v1.",
+    "nonGoals": [
+      "Define the normative performance contract in the bootstrap diff",
+      "Implement an optimizer or execute a refactoring",
+      "Grant deployment, merge, secret-access or production-mutation authority",
+      "Merge without independent trusted current-head approval"
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 20,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Keep bootstrap governance separate from the normative contract, validator and CI workstreams.",
+      "components": [
+        {
+          "name": "performance-governance",
+          "paths": [
+            "project/ticket-001/**",
+            "project/ticket-002/**",
+            "project/ticket-003/**",
+            "project/ticket-004/**",
+            "TODO.md",
+            "project/TICKETS.md"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert the bootstrap planning commit while preserving the immutable seed baseline."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "goal governance adopt --source-revision 4d0a61837245b2906ce19c75c050fea1bc12adf2 --target-root . --check"
+        ],
+        "evidence": "project/ticket-001/ai-codex-logs.txt"
+      },
+      {
+        "criterion": "AC-02",
+        "commands": [
+          "./project/governance-check.sh --actor agent --base 1d04a9ae9bfee0cd72fb7e55d2c60483a9769357 --head HEAD",
+          "git diff --check"
+        ],
+        "evidence": "project/ticket-001/ai-codex-logs.txt"
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-001/**",
+    "project/ticket-002/**",
+    "project/ticket-003/**",
+    "project/ticket-004/**",
+    "TODO.md",
+    "project/TICKETS.md"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
   "stacks": [],
   "dependsOn": [],
   "conflictsWith": [],

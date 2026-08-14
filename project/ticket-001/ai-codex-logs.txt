@@ -4,3 +4,7 @@
 - adopted wellmanifest/new-project 0.17.0 at 4d0a61837245b2906ce19c75c050fea1bc12adf2
 - managed governance files: 34
 - no user-* participant file created
+- seed commit: 1d04a9ae9bfee0cd72fb7e55d2c60483a9769357
+- public remote: https://github.com/wellmanifest/performance
+- delete_branch_on_merge: true
+- delivery slices allocated: ticket-002, ticket-003, ticket-004

@@ -30,6 +30,10 @@ without treating a benchmark or proposal as execution authority.
 - Initialized the bounded ticket and recorded
   `SESSION_EXECUTION_AUTHORIZATION` from the user's instruction to create the
   standard.
+- Published the seed baseline to the public `wellmanifest/performance`
+  repository with branch deletion enabled after merge.
+- Allocated separate backlog tickets for the normative contract, offline
+  conformance validator and hosted CI publication.
 - Kept this ticket limited to bootstrap governance and planning.
 
 ## Blockers
