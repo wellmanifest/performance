@@ -12,3 +12,57 @@
 - governance adoption check: up-to-date
 - governance gate at 5617e7e: GOV-PASS (0 errors, 0 warnings)
 - diff whitespace check: passed
+
+# Regression repair session (2026-08-15)
+ACCEPTED_BASE=869352160b7fdbcff4baaa12c6572a11f8d36263
+BRANCH=ticket/001-restore-governance-lock-conformance
+
+BASE_GOVERNANCE=./project/governance-check.sh --actor agent
+BASE_RESULT=GOV-FAIL 5 errors 0 warnings
+BASE_DIAGNOSTIC=GOV-SYNC-001 .governance/diagnostics.schema.json
+BASE_DIAGNOSTIC=GOV-SYNC-001 .governance/governance_check.py
+BASE_DIAGNOSTIC=GOV-SYNC-001 .governance/manifest.base.json
+BASE_DIAGNOSTIC=GOV-SYNC-001 .governance/manifest.schema.json
+BASE_DIAGNOSTIC=GOV-SYNC-001 .governance/remediation-intent.schema.json
+BASE_CAUSE=45bde3b edited lock-pinned files without regenerating the lock
+BASE_SCOPE_VIOLATION=.governance/** was never in ticket-001 allowedPaths
+
+ADOPTED_STANDARD=wellmanifest/new-project 0.17.0 @ 4d0a61837245b2906ce19c75c050fea1bc12adf2
+UPSTREAM_STANDARD=wellmanifest/new-project 0.18.1
+REMEDIATION_CHOSEN=restore-pinned-files
+REMEDIATION_REJECTED=standard-upgrade-and-lock-regeneration
+
+RESTORE_SOURCE=1d04a9ae9bfee0cd72fb7e55d2c60483a9769357
+RESTORED=.governance/diagnostics.schema.json
+RESTORED=.governance/governance_check.py
+RESTORED=.governance/manifest.base.json
+RESTORED=.governance/manifest.schema.json
+RESTORED=.governance/remediation-intent.schema.json
+REALIGNED=.governance/manifest.json signedAttestationPredicateType
+IMPLEMENTATION_FILES=6
+
+MANAGED_FILES_CHECKED=34
+MANAGED_FILES_MISMATCHED=0
+LOCK_EDITED=no
+RESIDUAL_DOT_COM_UNDER_GOVERNANCE=none
+AC_01=PASS
+AC_06=PASS
+
+GOVERNANCE=./project/governance-check.sh --actor agent
+GOVERNANCE_RESULT=GOV-PASS: passed (0 errors, 0 warnings)
+AC_02=PASS
+
+NON_GOVERNANCE_DIFF=git diff --stat 8693521 -- profiles spec schemas docs src tests
+NON_GOVERNANCE_DIFF_RESULT=empty
+
+# Cross-repository scope of the same sweep
+SWEEP_HIT=code-dsl std=0.17.0 9179330 GOV-FAIL repaired in wellmanifest/code-dsl#2
+SWEEP_HIT=performance std=0.17.0 45bde3b GOV-FAIL repaired here
+SWEEP_HIT=merge std=0.18.0 94e51f1 GOV-PASS lock already records .com
+
+PUSH=performed
+PULL_REQUEST=performed
+MERGE=not-performed
+TAG=not-performed
+RELEASE=not-performed
+WORKFLOW_STATE=PUBLICATION

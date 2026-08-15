@@ -9,7 +9,7 @@
     ],
     "reviewVerificationMethod": "github-api-allowlist",
     "schema": "new-project.approval-evidence/v1",
-    "signedAttestationPredicateType": "https://wellmanifest.com/attestations/validator/v1"
+    "signedAttestationPredicateType": "https://wellmanifest.dev/attestations/validator/v1"
   },
   "coordination": {
     "integration": {
