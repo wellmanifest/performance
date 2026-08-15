@@ -9,26 +9,28 @@
     "origin": "requested"
   },
   "delivery": {
-    "acceptedBaseSha": "1d04a9ae9bfee0cd72fb7e55d2c60483a9769357",
+    "acceptedBaseSha": "869352160b7fdbcff4baaa12c6572a11f8d36263",
     "targetBranch": "main",
-    "outcome": "The standalone repository has immutable governance, bounded tickets and an auditable plan for Performance v1.",
+    "outcome": "The standalone repository has immutable governance that actually verifies, bounded tickets and an auditable plan for Performance v1.",
     "nonGoals": [
       "Define the normative performance contract in the bootstrap diff",
       "Implement an optimizer or execute a refactoring",
       "Grant deployment, merge, secret-access or production-mutation authority",
-      "Merge without independent trusted current-head approval"
+      "Merge without independent trusted current-head approval",
+      "Upgrade the adopted new-project governance standard to 0.18.x",
+      "Regenerate or edit .governance/manifest.lock.json"
     ],
-    "complexity": "XS",
-    "estimatedMinutes": 20,
+    "complexity": "M",
+    "estimatedMinutes": 15,
     "budgets": {
-      "maxImplementationFiles": 5,
-      "maxAffectedComponents": 1,
+      "maxImplementationFiles": 9,
+      "maxAffectedComponents": 2,
       "maxPublicInterfaceChanges": 0,
       "maxRuntimeDependencies": 0
     },
     "architecture": {
       "status": "accepted",
-      "decision": "Keep bootstrap governance separate from the normative contract, validator and CI workstreams.",
+      "decision": "Keep bootstrap governance separate from the normative contract, validator and CI workstreams, and hold the adopted governance pack byte-identical to its pinned revision rather than editing lock-managed files in place.",
       "components": [
         {
           "name": "performance-governance",
@@ -40,6 +42,17 @@
             "TODO.md",
             "project/TICKETS.md"
           ]
+        },
+        {
+          "name": "adopted-governance-pack",
+          "paths": [
+            ".governance/diagnostics.schema.json",
+            ".governance/governance_check.py",
+            ".governance/manifest.base.json",
+            ".governance/manifest.json",
+            ".governance/manifest.schema.json",
+            ".governance/remediation-intent.schema.json"
+          ]
         }
       ],
       "responsibilityChanges": false,
@@ -50,22 +63,30 @@
         "states": [],
         "evidence": []
       },
-      "rollback": "Revert the bootstrap planning commit while preserving the immutable seed baseline."
+      "rollback": "Revert the restore commit; the trusted lock is never modified, so the pinned baseline stays reachable."
     },
     "runtimeDependencies": [],
     "validation": [
       {
         "criterion": "AC-01",
         "commands": [
-          "goal governance adopt --source-revision 4d0a61837245b2906ce19c75c050fea1bc12adf2 --target-root . --check"
+          "python3 -c \"import json,hashlib; lock=json.load(open('.governance/manifest.lock.json'))['managedFiles']; print(sum(hashlib.sha256(open(f,'rb').read()).hexdigest()!=d for f,d in lock.items()))\"",
+          "./project/governance-check.sh --actor agent"
         ],
         "evidence": "project/ticket-001/ai-codex-logs.txt"
       },
       {
         "criterion": "AC-02",
         "commands": [
-          "./project/governance-check.sh --actor agent --base 1d04a9ae9bfee0cd72fb7e55d2c60483a9769357 --head HEAD",
+          "./project/governance-check.sh --actor agent",
           "git diff --check"
+        ],
+        "evidence": "project/ticket-001/ai-codex-logs.txt"
+      },
+      {
+        "criterion": "AC-06",
+        "commands": [
+          "git diff --stat 869352160b7fdbcff4baaa12c6572a11f8d36263 -- profiles spec schemas docs"
         ],
         "evidence": "project/ticket-001/ai-codex-logs.txt"
       }
@@ -77,10 +98,12 @@
     "project/ticket-003/**",
     "project/ticket-004/**",
     "TODO.md",
-    "project/TICKETS.md"
+    "project/TICKETS.md",
+    ".governance/**"
   ],
   "forbiddenPaths": [
-    "project/ticket-*/user-*.md"
+    "project/ticket-*/user-*.md",
+    ".governance/manifest.lock.json"
   ],
   "stacks": [],
   "dependsOn": [],

@@ -1,5 +1,16 @@
 # Ticket Changelog (ticket-001)
 
+## [0.2.0] - 2026-08-15
+
+- Restored the five lock-pinned managed governance files that `45bde3b`
+  changed without regenerating `.governance/manifest.lock.json`.
+- Realigned `.governance/manifest.json` with the pinned attestation predicate
+  constant required by `manifest.schema.json`.
+- Widened the ticket intent to own `.governance/**` and to forbid the lock,
+  correcting the scope violation that allowed the original edit.
+- Added AC-06 for lock conformance and annotated the AC-01 regression.
+- Governance gate returns to `GOV-PASS` with zero errors and zero warnings.
+
 ## [0.1.0] - 2026-08-14
 
 - Initial governance scaffold created.
