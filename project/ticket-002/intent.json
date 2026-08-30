@@ -8,6 +8,43 @@
     "priority": "P1",
     "origin": "requested"
   },
+  "delivery": {
+    "acceptedBaseSha": "b9dfa473cf306b6998843cf5b4b5761291bfd95a",
+    "targetBranch": "main",
+    "outcome": "Publish a closed Performance v1 contract that turns measured repository, workstation, JSONL, health-check and background-service costs into bounded, reversible adoption plans.",
+    "nonGoals": [
+      "Execute deployment or production mutation",
+      "Prescribe one language or runtime",
+      "Hide canonical source, configuration, sprint or security evidence",
+      "Treat a benchmark or plan as execution authority"
+    ],
+    "complexity": "M",
+    "estimatedMinutes": 25,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 2,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Use a language-neutral closed plan with explicit profiles, comparable measurements, preserved invariants, bounded changes and rollback; keep execution in the adopting runtime.",
+      "components": [
+        {"name": "normative-contract", "paths": ["docs/PERFORMANCE.md", "docs/performance-plan.schema.v1.json", "docs/performance-plan.v1.gbnf"]},
+        {"name": "adoption-guidance", "paths": ["docs/ARCHITECTURE.md", "docs/LOGIC_FLOW.md"]}
+      ],
+      "responsibilityChanges": true,
+      "interfaceChanges": ["performance.plan/v1", "performance adoption profiles"],
+      "dataChanges": ["closed performance plan JSON"],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Remove the adoption projection or revert the bounded adopter change; retain the baseline and measurement receipt."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {"criterion": "AC-02", "commands": ["python3 -m json.tool docs/performance-plan.schema.v1.json"], "evidence": "project/ticket-002/ai-codex-logs.txt"},
+      {"criterion": "AC-03", "commands": ["./project/governance-check.sh --actor agent", "git diff --check"], "evidence": "project/ticket-002/ai-codex-logs.txt"}
+    ]
+  },
   "allowedPaths": [
     "project/ticket-002/**",
     "TODO.md",
@@ -20,7 +57,7 @@
   ],
   "forbiddenPaths": ["project/ticket-*/user-*.md"],
   "stacks": [],
-  "dependsOn": ["ticket-001"],
+  "dependsOn": [],
   "conflictsWith": [],
   "integrationTicket": null
 }

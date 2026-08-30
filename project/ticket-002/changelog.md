@@ -6,3 +6,5 @@
 - No human participant identity or content was generated.
 - Reserved the integration workstream for the normative Performance v1
   contract after bootstrap integration.
+- Defined and validated the Performance v1 normative contract, schema, request
+  grammar, architecture and adoption flow from measured Subactor cases.
