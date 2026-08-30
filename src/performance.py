@@ -59,6 +59,7 @@ INVARIANT_KINDS = {
 CONTROL_KINDS = {
     "repository_working_set", "background_work", "append_only_read",
     "health_probe", "refresh_cache", "concurrency", "process_resource",
+    "request_amplification",
 }
 CONTROL_UNITS = {"bytes", "records", "milliseconds", "percent", "count", "weight"}
 PROFILE_CONTROLS = {
