@@ -36,7 +36,7 @@
     },
     "runtimeDependencies": [],
     "validation": [
-      {"criterion": "AC-01", "commands": ["python3 -m unittest -v tests/test_performance.py"], "evidence": "project/ticket-003/ai-codex-logs.txt"},
+      {"criterion": "AC-01", "commands": ["python3 -m unittest discover -s tests -p 'test_performance.py' -v"], "evidence": "project/ticket-003/ai-codex-logs.txt"},
       {"criterion": "AC-06", "commands": ["python3 src/performance.py check-local --workspace . --manifest repos.manifest"], "evidence": "project/ticket-003/ai-codex-logs.txt"}
     ]
   },
