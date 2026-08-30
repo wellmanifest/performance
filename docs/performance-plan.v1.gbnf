@@ -13,7 +13,7 @@ metric ::= "{" ws q "name" q colon identifier comma q "unit" q colon unit comma 
 budgets ::= q "budgets" q colon "[" ws budget (comma budget)* ws "]"
 budget ::= "{" ws q "metric" q colon identifier comma q "unit" q colon unit comma q "comparison" q colon q ("at_most" | "at_least") q comma q "threshold" q colon number ws "}"
 controls ::= q "controls" q colon "[" ws control (comma control)* ws "]"
-control ::= "{" ws q "kind" q colon control-kind comma q "target" q colon safe-string comma q "limit" q colon number comma q "unit" q colon control-unit comma q "mechanism" q colon safe-string comma q "verification" q colon safe-string comma q "exception" q colon optional-safe-string ws "}"
+control ::= "{" ws q "kind" q colon control-kind comma q "target" q colon safe-string comma q "limit" q colon nonnegative-number comma q "unit" q colon control-unit comma q "mechanism" q colon safe-string comma q "verification" q colon safe-string comma q "exception" q colon optional-safe-string ws "}"
 control-kind ::= q ("repository_working_set" | "background_work" | "append_only_read" | "health_probe" | "refresh_cache" | "concurrency" | "process_resource") q
 control-unit ::= q ("bytes" | "records" | "milliseconds" | "percent" | "count" | "weight") q
 invariants ::= q "invariants" q colon "[" ws invariant (comma invariant)* ws "]"
@@ -37,6 +37,7 @@ safe-char ::= [A-Za-z0-9_ ./,:()@%+?=!-]
 sha40 ::= q hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex q
 sha64 ::= q hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex q
 positive-integer ::= [1-9] [0-9]*
+nonnegative-number ::= ("0" | [1-9] [0-9]*) ("." [0-9]+)? ([eE] "+"? [0-9]+)?
 number ::= "-"? ("0" | [1-9] [0-9]*) ("." [0-9]+)? ([eE] [+-]? [0-9]+)?
 hex ::= [0-9a-f]
 q ::= "\""
