@@ -8,6 +8,38 @@
     "priority": "P1",
     "origin": "requested"
   },
+  "delivery": {
+    "acceptedBaseSha": "b9dfa473cf306b6998843cf5b4b5761291bfd95a",
+    "targetBranch": "main",
+    "outcome": "Provide deterministic Performance v1 validation and reversible local repository adoption across the canonical Wellmanifest inventory.",
+    "nonGoals": [
+      "Edit tracked files in adopting repositories",
+      "Push, merge, deploy or access secrets",
+      "Index or mutate linked worktrees and deployment copies",
+      "Treat plan validation as execution authority"
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 25,
+    "budgets": {"maxImplementationFiles": 2, "maxAffectedComponents": 2, "maxPublicInterfaceChanges": 1, "maxRuntimeDependencies": 0},
+    "architecture": {
+      "status": "accepted",
+      "decision": "Use one dependency-free Python CLI for strict plan semantics and a marker-bounded local Git exclude adopter driven only by repos.manifest.",
+      "components": [
+        {"name": "conformance-and-adopter", "paths": ["src/performance.py"]},
+        {"name": "adversarial-tests", "paths": ["tests/test_performance.py"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": ["performance.py validate|adopt-local|check-local"],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Run adopt-local --remove against the same manifest; only the marker-bounded block is removed."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {"criterion": "AC-01", "commands": ["python3 -m unittest -v tests/test_performance.py"], "evidence": "project/ticket-003/ai-codex-logs.txt"},
+      {"criterion": "AC-06", "commands": ["python3 src/performance.py check-local --workspace . --manifest repos.manifest"], "evidence": "project/ticket-003/ai-codex-logs.txt"}
+    ]
+  },
   "allowedPaths": [
     "project/ticket-003/**",
     "TODO.md",
@@ -17,7 +49,7 @@
   ],
   "forbiddenPaths": ["project/ticket-*/user-*.md"],
   "stacks": [],
-  "dependsOn": ["ticket-001", "ticket-002"],
+  "dependsOn": [],
   "conflictsWith": [],
   "integrationTicket": null
 }

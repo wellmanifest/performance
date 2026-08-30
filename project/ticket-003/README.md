@@ -2,8 +2,8 @@
 
 - **ID**: ticket-003
 - **Owner**: unresolved:human
-- **Status**: BACKLOG
-- **Workflow state**: PLAN
+- **Status**: IN_PROGRESS
+- **Workflow state**: VALIDATION
 - **Created**: 2026-08-14
 
 ## Goal and scope
@@ -14,17 +14,24 @@ and fail-safe exit codes. Tests must cover valid plans and adversarial cases
 including missing baselines, incomparable workloads, one-dimensional wins,
 unbounded Rust rewrites, security regression and embedded execution authority.
 
+The CLI also owns a reversible local-adoption operation for the canonical
+Wellmanifest workspace inventory. It installs a digest-marked block in each
+checkout's local Git exclude file and emits a bounded receipt. It never edits
+tracked adopter files, worktrees, deployments, missing repositories or remotes.
+
 ## Acceptance criteria
 
-- [ ] AC-01: Strict parsing rejects duplicate keys, malformed UTF-8 and unknown
+- [x] AC-01: Strict parsing rejects duplicate keys, malformed UTF-8 and unknown
       document fields.
-- [ ] AC-02: Semantic checks enforce comparable evidence, budgets, invariants,
+- [x] AC-02: Semantic checks enforce comparable evidence, budgets, invariants,
       rollback and authority separation.
-- [ ] AC-03: Findings are stable, bounded, value-free and deterministically
+- [x] AC-03: Findings are stable, bounded, value-free and deterministically
       ordered.
-- [ ] AC-04: CLI exits `0` for conforming plans, `1` for findings and `2` for
+- [x] AC-04: CLI exits `0` for conforming plans, `1` for findings and `2` for
       internal failure.
-- [ ] AC-05: Tests exercise every refactoring outcome and fail-closed boundary.
+- [x] AC-05: Tests exercise every refactoring outcome and fail-closed boundary.
+- [x] AC-06: Local adoption preserves existing excludes, canonical `.planfile`
+      inputs and dirty worktrees while covering every checked-out manifest repo.
 
 ## Risks
 
@@ -36,3 +43,12 @@ unbounded Rust rewrites, security regression and embedded execution authority.
 
 - Human participant: unresolved; no user-* file was created by this script.
 - Agent participant: [ai-codex.md](ai-codex.md)
+
+## Validation evidence
+
+- Dependency-free unit/adversarial suite: 7 tests passed.
+- Governance gate and diff check passed.
+- Local adopter updated 45/45 declared checkouts; read-only follow-up reported
+  45 `current`, zero missing, malformed or unsafe repositories.
+- Receipt: `~/.local/state/wellmanifest-performance/adoption-20260830.json`,
+  pattern digest `sha256:ab1e767798cb6f5140bb32df3ab53281e2c38ae3a80c893bb57e8964cfbecc69`.

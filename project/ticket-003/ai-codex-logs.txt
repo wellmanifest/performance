@@ -1,0 +1,1 @@
+2026-08-30 VALIDATION receipt=local tests=7 governance=PASS adoption=45/45-current pattern=sha256:ab1e767798cb6f5140bb32df3ab53281e2c38ae3a80c893bb57e8964cfbecc69 raw-transcript=untracked
