@@ -37,6 +37,9 @@ tracked files, remotes, deployments, secrets or destructive state.
   canonical `.planfile` configuration remains visible while only generated
   event, evidence and index subtrees are excluded.
 - Verified every declared checkout as current after adoption.
+- Added profile-required control validation and a bounded, secret-avoiding
+  static repository audit with stable health, I/O, concurrency and scan-limit
+  diagnostics.
 
 ## Blockers
 

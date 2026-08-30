@@ -19,6 +19,11 @@ Wellmanifest workspace inventory. It installs a digest-marked block in each
 checkout's local Git exclude file and emits a bounded receipt. It never edits
 tracked adopter files, worktrees, deployments, missing repositories or remotes.
 
+The follow-up audit adds a bounded static repository scan for fast healthcheck
+cadence, interpreter-per-probe commands, probable whole-file event reads and
+mapped concurrency without a visible local bound. Findings are advisory input
+to a measured plan and contain paths/lines, never source values.
+
 ## Acceptance criteria
 
 - [x] AC-01: Strict parsing rejects duplicate keys, malformed UTF-8 and unknown
@@ -32,6 +37,9 @@ tracked adopter files, worktrees, deployments, missing repositories or remotes.
 - [x] AC-05: Tests exercise every refactoring outcome and fail-closed boundary.
 - [x] AC-06: Local adoption preserves existing excludes, canonical `.planfile`
       inputs and dirty worktrees while covering every checked-out manifest repo.
+- [x] AC-07: Static audit is bounded, skips generated/vendor/test and secret
+      trees by default, emits no source values, and reports stable path/line
+      findings for health, growing-file I/O and concurrency hazards.
 
 ## Risks
 
@@ -46,9 +54,12 @@ tracked adopter files, worktrees, deployments, missing repositories or remotes.
 
 ## Validation evidence
 
-- Dependency-free unit/adversarial suite: 7 tests passed.
+- Dependency-free unit/adversarial suite: 11 tests passed.
 - Governance gate and diff check passed.
 - Local adopter updated 45/45 declared checkouts; read-only follow-up reported
   45 `current`, zero missing, malformed or unsafe repositories.
 - Receipt: `~/.local/state/wellmanifest-performance/adoption-20260830.json`,
   pattern digest `sha256:ab1e767798cb6f5140bb32df3ab53281e2c38ae3a80c893bb57e8964cfbecc69`.
+- Static fleet audit receipt:
+  `~/.local/state/wellmanifest-performance/audit-20260830.json`; 45 repositories
+  scanned with generated/vendor/test trees excluded by default.

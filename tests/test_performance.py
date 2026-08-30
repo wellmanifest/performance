@@ -31,6 +31,11 @@ def valid_plan():
         "baseline": {"workloadId": "tail", "metrics": copy.deepcopy(metrics), "evidence": evidence("c")},
         "candidate": {"workloadId": "tail", "metrics": copy.deepcopy(metrics), "evidence": evidence("d")},
         "budgets": [{"metric": "cpu", "unit": "percent", "comparison": "at_most", "threshold": 60}],
+        "controls": [
+            {"kind": "repository_working_set", "target": "repository", "limit": 1000, "unit": "count", "mechanism": "narrow generated tree exclusions", "verification": "bounded file count", "exception": ""},
+            {"kind": "process_resource", "target": "observer", "limit": 50, "unit": "percent", "mechanism": "runtime cpu budget", "verification": "cpu pressure sample", "exception": ""},
+            {"kind": "concurrency", "target": "refresh", "limit": 1, "unit": "count", "mechanism": "coalesced refresh", "verification": "concurrent caller test", "exception": ""},
+        ],
         "invariants": [
             {"id": kind, "kind": kind, "verification": "bounded test", "required": True}
             for kind in ("functional", "security", "resource", "authority")
@@ -77,6 +82,14 @@ class PlanTests(unittest.TestCase):
         self.assertEqual(1, result.returncode)
         self.assertIn("PERF-JSON-001", result.stdout)
 
+    def test_non_json_numeric_constants_are_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "plan.json"
+            path.write_text('{"value":NaN}')
+            result = subprocess.run([sys.executable, str(MODULE_PATH), "validate", str(path)], capture_output=True, text=True, check=False)
+        self.assertEqual(1, result.returncode)
+        self.assertIn("PERF-JSON-001", result.stdout)
+
     def test_all_outcomes_and_deterministic_findings(self):
         for outcome in performance.OUTCOMES:
             plan = valid_plan()
@@ -119,6 +132,51 @@ class AdoptionTests(unittest.TestCase):
             removed = performance.local_adoption(root, manifest, True, True)
             self.assertEqual(["removed", "removed"], [item["status"] for item in removed["repositories"]])
             self.assertEqual("custom.cache\n", (root / "one" / ".git" / "info" / "exclude").read_text())
+
+
+class RepositoryAuditTests(unittest.TestCase):
+    def test_detects_runtime_hazards_and_skips_generated_trees(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "src").mkdir()
+            (root / "node_modules").mkdir()
+            (root / "test").mkdir()
+            (root / "docker-compose.yml").write_text(
+                'services:\n  api:\n    healthcheck:\n      test: ["CMD", "node", "-e", "fetch(url)"]\n      interval: 3s\n'
+            )
+            (root / "src" / "reader.mjs").write_text('await readFile(auditJsonl, "utf8");\nawait Promise.all(items.map(run));\n')
+            (root / "node_modules" / "ignored.mjs").write_text('await Promise.all(items.map(run));\n')
+            (root / "test" / "fixture.test.mjs").write_text('await readFile(auditJsonl, "utf8");\n')
+
+            findings = performance.audit_repository(root)
+
+        self.assertEqual(
+            {"PERF-AUDIT-HEALTH-001", "PERF-AUDIT-HEALTH-002", "PERF-AUDIT-IO-001", "PERF-AUDIT-CONCURRENCY-001"},
+            {item["code"] for item in findings},
+        )
+        self.assertFalse(any("node_modules" in item["path"] for item in findings))
+        self.assertFalse(any(item["path"].startswith("test/") for item in findings))
+
+    def test_detects_shared_fast_healthcheck_fanout(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".env.example").write_text("HEALTHCHECK_INTERVAL=3s\n")
+            (root / "compose.yml").write_text(
+                "services:\n  one:\n    healthcheck:\n      interval: ${HEALTHCHECK_INTERVAL}\n  two:\n    healthcheck:\n      interval: ${HEALTHCHECK_INTERVAL}\n"
+            )
+            findings = performance.audit_repository(root)
+        self.assertEqual(
+            {"PERF-AUDIT-HEALTH-001", "PERF-AUDIT-HEALTH-003"},
+            {item["code"] for item in findings},
+        )
+
+    def test_audit_file_limit_is_explicit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for index in range(3):
+                (root / f"{index}.py").write_text("pass\n")
+            findings = performance.audit_repository(root, max_files=2)
+        self.assertEqual(["PERF-AUDIT-LIMIT-001"], [item["code"] for item in findings])
 
 
 if __name__ == "__main__":
