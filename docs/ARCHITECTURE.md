@@ -30,4 +30,3 @@ Four adapters map the contract to local mechanisms:
 
 All adapters preserve source, configuration, security and behavioral
 invariants. The runtime records a receipt; the standard never claims the effect.
-
