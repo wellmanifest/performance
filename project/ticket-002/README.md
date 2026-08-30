@@ -2,8 +2,8 @@
 
 - **ID**: ticket-002
 - **Owner**: unresolved:human
-- **Status**: BACKLOG
-- **Workflow state**: PLAN
+- **Status**: IN_PROGRESS
+- **Workflow state**: VALIDATION
 - **Created**: 2026-08-14
 
 ## Goal and scope
@@ -14,18 +14,27 @@ compatibility, security invariants, rollout, rollback and verification. Publish
 the normative prose, closed JSON Schema, request-only GBNF and the required
 architecture diagrams. This ticket describes work and never authorizes it.
 
+The 2026-08-30 execution slice also standardizes the measured Subactor
+findings: generated-tree exclusion, background CPU/I/O containment, bounded
+JSONL tail reads, shared refresh caches, and health-check cadence. These are
+portable requirements; host-specific values remain adopter configuration.
+
+A follow-up live audit adds machine-readable control records, detection tiers,
+aggregate health-probe fan-out and bounded static-audit requirements after
+observing 18 services sharing a three-second interpreter-based probe cadence.
+
 ## Acceptance criteria
 
-- [ ] AC-01: The standard covers no-change, configuration, packaging,
+- [x] AC-01: The standard covers no-change, configuration, packaging,
       same-language, algorithm, concurrency, protocol, runtime, selective Rust
       extraction and bounded replacement outcomes.
-- [ ] AC-02: A plan is invalid without a comparable baseline, workload,
+- [x] AC-02: A plan is invalid without a comparable baseline, workload,
       measurement method, acceptance threshold and rollback.
-- [ ] AC-03: Functional, security, resource and authority invariants are
+- [x] AC-03: Functional, security, resource and authority invariants are
       preserved independently of performance gains.
-- [ ] AC-04: The closed schema and GBNF reject unknown fields and executable
+- [x] AC-04: The closed schema and GBNF reject unknown fields and executable
       shell strings.
-- [ ] AC-05: POA and DSL remain immutable external bindings; no standard
+- [x] AC-05: POA and DSL remain immutable external bindings; no standard
       document grants execution or deployment authority.
 
 ## Risks
@@ -38,3 +47,12 @@ architecture diagrams. This ticket describes work and never authorizes it.
 
 - Human participant: unresolved; no user-* file was created by this script.
 - Agent participant: [ai-codex.md](ai-codex.md)
+
+## Validation evidence
+
+- JSON Schema parsed and passed Draft 2020-12 meta-schema validation.
+- `./project/governance-check.sh --actor agent`: `GOV-PASS`.
+- `git diff --check`: passed.
+- No runtime dependency, network effect, deployment or embedded grant was added.
+- Expanded schema passes Draft 2020-12 meta-validation and governance after
+  adding closed control records and bounded static-audit semantics.
