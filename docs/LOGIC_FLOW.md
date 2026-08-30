@@ -23,6 +23,7 @@
 | concurrent refreshes repeat the same full scan | promise coalescing, bounded cache and backpressure | refresh count, queue bound and freshness |
 | 18 services share a 3-second interpreter-based healthcheck interval | detection tiers, native probes and aggregate spawn-rate budget | probe CPU, detection delay and services/interval |
 | repository-wide automation launches unbounded recursive scans | explicit file/byte/concurrency ceilings and generated-tree pruning | scanned entries, wall time and maximum in-flight work |
+| consumers repeatedly list 500–1000 tickets and reread one exact ticket | shared bounded snapshot, conditional/exact reads and freshness budget | requests, rows and bytes per observation window |
 
 These mappings are examples, not universal numeric defaults. Canonical
 `.planfile` configuration and sprint definitions remain visible; only generated
@@ -40,3 +41,4 @@ reconstructable.
 - Missing profile-required control or a negative/non-finite control limit: reject.
 - A static audit finding without representative measurement: investigate; do
   not mutate automatically.
+- Source/runtime probe-count mismatch: use the rendered stack as evidence.

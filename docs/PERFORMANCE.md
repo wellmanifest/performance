@@ -43,9 +43,9 @@ Profiles compose. A repository with a service normally adopts `repository` and
 Every plan MUST carry at least one machine-readable `controls` record. A record
 binds a control kind and target to one numeric limit, unit, mechanism and
 verification method. Supported kinds are repository working set, background
-work, append-only read, health probe, refresh cache, concurrency and process
-resource. Limits MUST be finite and non-negative. An exception MUST be explicit,
-bounded and measured; an empty exception means none.
+work, append-only read, health probe, refresh cache, concurrency, process
+resource and request amplification. Limits MUST be finite and non-negative. An
+exception MUST be explicit, bounded and measured; an empty exception means none.
 
 The selected profiles require these minimum controls:
 
@@ -132,6 +132,20 @@ Every fan-out operation MUST declare maximum in-flight work, queue size,
 per-item timeout and failure aggregation. An unbounded `Promise.all`, thread
 pool, process spawn, repository walk or recursive file scan over externally
 growing input is non-conforming even when current fixtures are small.
+
+### Request amplification
+
+Polling consumers MUST declare requests per observation window, maximum rows
+and bytes returned, cache/coalescing behavior and freshness need. Repeated exact
+reads of the same immutable revision SHOULD share a cache. Several list queries
+that differ only by a filter SHOULD use one bounded snapshot when this preserves
+authorization and freshness. A service MUST NOT repeatedly request thousands of
+rows merely to compute a small status projection when a summary, cursor,
+conditional request or exact endpoint can provide the same evidence.
+
+The adopter MUST inspect the rendered runtime configuration as well as source
+Compose files. Overlays and environment expansion can create more active probes
+than a static source count reveals.
 
 ## Static audit boundary
 

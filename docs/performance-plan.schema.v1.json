@@ -107,7 +107,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["kind", "target", "limit", "unit", "mechanism", "verification", "exception"],
       "properties": {
-        "kind": {"enum": ["repository_working_set", "background_work", "append_only_read", "health_probe", "refresh_cache", "concurrency", "process_resource"]},
+        "kind": {"enum": ["repository_working_set", "background_work", "append_only_read", "health_probe", "refresh_cache", "concurrency", "process_resource", "request_amplification"]},
         "target": {"type": "string", "minLength": 1, "maxLength": 300},
         "limit": {"type": "number", "minimum": 0},
         "unit": {"enum": ["bytes", "records", "milliseconds", "percent", "count", "weight"]},
