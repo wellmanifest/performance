@@ -38,6 +38,23 @@ Every plan selects one or more profiles:
 Profiles compose. A repository with a service normally adopts `repository` and
 `runtime-service`.
 
+## Control records
+
+Every plan MUST carry at least one machine-readable `controls` record. A record
+binds a control kind and target to one numeric limit, unit, mechanism and
+verification method. Supported kinds are repository working set, background
+work, append-only read, health probe, refresh cache, concurrency and process
+resource. Limits MUST be finite and non-negative. An exception MUST be explicit,
+bounded and measured; an empty exception means none.
+
+The selected profiles require these minimum controls:
+
+- `repository`: `repository_working_set`;
+- `developer-workstation`: `background_work` and `process_resource`;
+- `runtime-service`: `process_resource` and `concurrency`;
+- `high-throughput-runtime`: `process_resource` and `concurrency` with tail
+  latency and saturation budgets.
+
 ## Required evidence
 
 A plan MUST define one stable subject, a representative workload, a baseline,
@@ -96,12 +113,34 @@ requirements; development defaults SHOULD not poll faster than 15 seconds
 unless evidence requires it. Checks MUST have bounded output and SHOULD share
 cached state rather than repeat full scans.
 
+Cadence belongs to a declared detection tier: `startup`, `interactive`,
+`availability`, or `background`. A three-second probe across many stable local
+services is not a free default: its aggregate process-start rate MUST be
+measured. When several services share one variable, the plan MUST report the
+fan-out (`services / interval`) and the interpreter startup cost. Startup
+readiness MAY use a short bounded cadence; steady-state checks SHOULD transition
+to a slower availability cadence.
+
 ### Concurrency and caches
 
 Concurrent refreshes of the same resource MUST be coalesced or independently
 bounded. A cache declares key, TTL, maximum size, invalidation and stale-data
 policy. Backpressure MUST bound queues and define reject, defer or shed behavior.
 Caching MUST NOT weaken authorization, tenant isolation or freshness invariants.
+
+Every fan-out operation MUST declare maximum in-flight work, queue size,
+per-item timeout and failure aggregation. An unbounded `Promise.all`, thread
+pool, process spawn, repository walk or recursive file scan over externally
+growing input is non-conforming even when current fixtures are small.
+
+## Static audit boundary
+
+A repository audit MAY flag probable hazards such as interpreter-based Docker
+healthchecks, sub-15-second steady polling, whole-file reads associated with
+JSONL/audit/event paths, and unbounded concurrency. Findings are review input,
+not proof of a defect and never execution authority. Audits MUST be bounded by
+file count and bytes, skip generated/vendor/worktree/deployment trees, avoid
+secret files, and emit stable path-and-line diagnostics without source values.
 
 ## Strategy outcomes
 
@@ -131,4 +170,3 @@ Rollout MUST be bounded by scope, observation window and abort thresholds.
 Rollback MUST name a reversible mechanism and verification workload. A change
 is `verified` only after the post-change observation window passes every budget
 and invariant.
-

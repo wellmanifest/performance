@@ -1,1 +1,2 @@
 2026-08-30 VALIDATION receipt=local commands=json-schema-meta,governance-check,diff-check result=PASS raw-transcript=untracked
+2026-08-30 VALIDATION receipt=local expansion=controls,health-fanout,static-audit schema-meta=PASS governance=PASS raw-transcript=untracked

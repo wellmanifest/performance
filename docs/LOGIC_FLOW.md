@@ -21,6 +21,8 @@
 | a JSONL observer rereads hundreds of MB per poll | backward EOF reader or durable offset, shared TTL cache | bytes read per request and result equivalence |
 | many containers run interpreter-based probes every few seconds | smallest native probe and evidence-based cadence | detection time and aggregate probe CPU |
 | concurrent refreshes repeat the same full scan | promise coalescing, bounded cache and backpressure | refresh count, queue bound and freshness |
+| 18 services share a 3-second interpreter-based healthcheck interval | detection tiers, native probes and aggregate spawn-rate budget | probe CPU, detection delay and services/interval |
+| repository-wide automation launches unbounded recursive scans | explicit file/byte/concurrency ceilings and generated-tree pruning | scanned entries, wall time and maximum in-flight work |
 
 These mappings are examples, not universal numeric defaults. Canonical
 `.planfile` configuration and sprint definitions remain visible; only generated
@@ -35,4 +37,6 @@ reconstructable.
 - Unknown plan field or executable shell string: reject.
 - Native extraction without a measured boundary and compatibility test: reject.
 - Successful candidate with no bounded rollout or rollback: reject.
-
+- Missing profile-required control or a negative/non-finite control limit: reject.
+- A static audit finding without representative measurement: investigate; do
+  not mutate automatically.

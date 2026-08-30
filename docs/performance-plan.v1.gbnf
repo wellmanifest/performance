@@ -1,4 +1,4 @@
-root ::= "{" ws schema comma subject comma profiles comma workload-field comma baseline comma candidate comma budgets comma invariants comma strategy comma rollout comma rollback comma authority ws "}"
+root ::= "{" ws schema comma subject comma profiles comma workload-field comma baseline comma candidate comma budgets comma controls comma invariants comma strategy comma rollout comma rollback comma authority ws "}"
 schema ::= q "schema" q colon q "performance.plan/v1" q
 subject ::= q "subject" q colon "{" ws q "repository" q colon identifier comma q "revision" q colon sha40 comma q "component" q colon safe-string ws "}"
 profiles ::= q "profiles" q colon "[" ws profile (comma profile)* ws "]"
@@ -12,6 +12,10 @@ metrics ::= "[" ws metric (comma metric)* ws "]"
 metric ::= "{" ws q "name" q colon identifier comma q "unit" q colon unit comma q "value" q colon number ws "}"
 budgets ::= q "budgets" q colon "[" ws budget (comma budget)* ws "]"
 budget ::= "{" ws q "metric" q colon identifier comma q "unit" q colon unit comma q "comparison" q colon q ("at_most" | "at_least") q comma q "threshold" q colon number ws "}"
+controls ::= q "controls" q colon "[" ws control (comma control)* ws "]"
+control ::= "{" ws q "kind" q colon control-kind comma q "target" q colon safe-string comma q "limit" q colon number comma q "unit" q colon control-unit comma q "mechanism" q colon safe-string comma q "verification" q colon safe-string comma q "exception" q colon optional-safe-string ws "}"
+control-kind ::= q ("repository_working_set" | "background_work" | "append_only_read" | "health_probe" | "refresh_cache" | "concurrency" | "process_resource") q
+control-unit ::= q ("bytes" | "records" | "milliseconds" | "percent" | "count" | "weight") q
 invariants ::= q "invariants" q colon "[" ws invariant (comma invariant)* ws "]"
 invariant ::= "{" ws q "id" q colon identifier comma q "kind" q colon kind comma q "verification" q colon safe-string comma q "required" q colon "true" ws "}"
 strategy ::= q "strategy" q colon "{" ws q "outcome" q colon outcome comma q "rationale" q colon safe-string comma q "changedPaths" q colon paths comma q "compatibility" q colon safe-string ws "}"
@@ -28,6 +32,7 @@ identifier ::= q [A-Za-z0-9_.-]+ q
 relative-path ::= q [A-Za-z0-9_./-]+ q
 uri ::= q [A-Za-z0-9_./:@%?+-]+ q
 safe-string ::= q safe-char+ q
+optional-safe-string ::= q safe-char* q
 safe-char ::= [A-Za-z0-9_ ./,:()@%+?=!-]
 sha40 ::= q hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex q
 sha64 ::= q hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex hex q

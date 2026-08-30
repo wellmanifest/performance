@@ -4,7 +4,7 @@
   "title": "Wellmanifest Performance plan v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "subject", "profiles", "workload", "baseline", "candidate", "budgets", "invariants", "strategy", "rollout", "rollback", "authority"],
+  "required": ["schema", "subject", "profiles", "workload", "baseline", "candidate", "budgets", "controls", "invariants", "strategy", "rollout", "rollback", "authority"],
   "properties": {
     "schema": {"const": "performance.plan/v1"},
     "subject": {
@@ -21,6 +21,7 @@
     "baseline": {"$ref": "#/$defs/measurement"},
     "candidate": {"$ref": "#/$defs/measurement"},
     "budgets": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/budget"}},
+    "controls": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/control"}},
     "invariants": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/invariant"}},
     "strategy": {
       "type": "object", "additionalProperties": false,
@@ -100,6 +101,19 @@
         "kind": {"enum": ["functional", "security", "resource", "authority", "availability", "compatibility"]},
         "verification": {"type": "string", "minLength": 1, "maxLength": 1000},
         "required": {"const": true}
+      }
+    },
+    "control": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "target", "limit", "unit", "mechanism", "verification", "exception"],
+      "properties": {
+        "kind": {"enum": ["repository_working_set", "background_work", "append_only_read", "health_probe", "refresh_cache", "concurrency", "process_resource"]},
+        "target": {"type": "string", "minLength": 1, "maxLength": 300},
+        "limit": {"type": "number", "minimum": 0},
+        "unit": {"enum": ["bytes", "records", "milliseconds", "percent", "count", "weight"]},
+        "mechanism": {"type": "string", "minLength": 1, "maxLength": 1000, "not": {"pattern": "(^|[;&|])\\s*(sudo|sh|bash|zsh|pwsh|cmd)(\\s|$)"}},
+        "verification": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "exception": {"type": "string", "maxLength": 1000}
       }
     },
     "boundedAction": {

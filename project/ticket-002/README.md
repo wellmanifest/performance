@@ -19,6 +19,10 @@ findings: generated-tree exclusion, background CPU/I/O containment, bounded
 JSONL tail reads, shared refresh caches, and health-check cadence. These are
 portable requirements; host-specific values remain adopter configuration.
 
+A follow-up live audit adds machine-readable control records, detection tiers,
+aggregate health-probe fan-out and bounded static-audit requirements after
+observing 18 services sharing a three-second interpreter-based probe cadence.
+
 ## Acceptance criteria
 
 - [x] AC-01: The standard covers no-change, configuration, packaging,
@@ -50,3 +54,5 @@ portable requirements; host-specific values remain adopter configuration.
 - `./project/governance-check.sh --actor agent`: `GOV-PASS`.
 - `git diff --check`: passed.
 - No runtime dependency, network effect, deployment or embedded grant was added.
+- Expanded schema passes Draft 2020-12 meta-validation and governance after
+  adding closed control records and bounded static-audit semantics.

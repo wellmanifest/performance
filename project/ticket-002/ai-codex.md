@@ -41,6 +41,9 @@ terminal merge, and this ticket binds the integrated SHA directly.
 - Added a request grammar plus architecture and adoption logic, including the
   measured generated-tree, background CPU/I/O, JSONL, polling and cache cases.
 - Bound POA and DSL by immutable revision and kept runtime effects in adopters.
+- Expanded v1 with profile-required numeric control records, health detection
+  tiers, aggregate probe cost and bounded static audit semantics from live
+  Subactor evidence.
 
 ## Blockers
 

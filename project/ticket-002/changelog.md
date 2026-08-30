@@ -8,3 +8,5 @@
   contract after bootstrap integration.
 - Defined and validated the Performance v1 normative contract, schema, request
   grammar, architecture and adoption flow from measured Subactor cases.
+- Added machine-readable numeric controls, health detection tiers, aggregate
+  probe fan-out, bounded concurrency and static-audit boundaries.
