@@ -1,2 +1,4 @@
 2026-08-30 VALIDATION receipt=local tests=7 governance=PASS adoption=45/45-current pattern=sha256:ab1e767798cb6f5140bb32df3ab53281e2c38ae3a80c893bb57e8964cfbecc69 raw-transcript=untracked
 2026-08-30 VALIDATION receipt=local tests=11 governance=PASS fleet-audit=45 bounded=true tests-excluded=true raw-transcript=untracked
+
+2026-09-05: Koru baseline then candidate completed. 12 unittest tests and managed governance pass. Exact full diagnostic parity across 46 Wellmanifest repositories. Five samples after one warm-up: wall median 0.285034 to 0.109055 seconds; peak Python allocations 278708 bytes unchanged. Prospective budgets wall ratio at most 0.95 and peak ratio at most 1.10 pass; performance.plan/v1 validates. Evidence artifact:wellmanifest-koru/20260905t201448z.

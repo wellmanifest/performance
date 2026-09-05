@@ -46,3 +46,6 @@ tracked files, remotes, deployments, secrets or destructive state.
 - None inside the recorded intent.
 - New authority remains required for destructive action, secret access, new
   external coordination, material objective expansion and trusted merge.
+
+SESSION_EXECUTION_AUTHORIZATION: user requested continuing Koru refactoring and performance work across wellmanifest repositories. The managed allocator rejected a second application ticket and instructed continuing existing ticket-003. Its IN_PROGRESS source/test scope matches this bounded continuation; the initial implementation PR is already merged. Refresh the accepted base and record this local follow-up before editing. No trusted approval is inferred from this note.
+Publication of this measured continuation follows the user execution request and prior protected-publication workflow. Keep the ticket IN_PROGRESS through trusted merge; do not self-approve.

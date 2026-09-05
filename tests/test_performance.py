@@ -179,5 +179,28 @@ class RepositoryAuditTests(unittest.TestCase):
         self.assertEqual(["PERF-AUDIT-LIMIT-001"], [item["code"] for item in findings])
 
 
+    def test_growing_source_requires_read_call_on_the_same_line(self):
+        lines = [
+            'audit_file.read_text()',
+            'readFile(eventLog)',
+            'read_to_string(EventJsonl)',
+            'readText(LogPath)',
+            'readFile(config)',
+            'audit_file = get_path()',
+            'read_text(configuration)',
+            'Promise.all(items.map(load))',
+            'Promise.all(items.slice(0, 2).map(load))',
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'mixed.py').write_text('\n'.join(lines))
+            findings = performance.audit_repository(root)
+        self.assertEqual(
+            [(item['code'], item['line']) for item in findings],
+            [('PERF-AUDIT-CONCURRENCY-001', 8)] +
+            [('PERF-AUDIT-IO-001', line) for line in range(1, 5)],
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

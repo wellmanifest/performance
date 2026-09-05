@@ -336,11 +336,11 @@ def audit_repository(root: Path, *, max_files: int = 5000, max_bytes: int = 1_04
                             findings.append({"code": "PERF-AUDIT-HEALTH-001", "path": relative, "line": number, "message": "healthcheck cadence below 15 seconds needs detection-tier evidence"})
                     if "test:" in stripped and re.search(r'["\'](?:node|python\d*|php)["\']\s*,\s*["\'](?:-e|-c|-r)["\']', stripped):
                         findings.append({"code": "PERF-AUDIT-HEALTH-002", "path": relative, "line": number, "message": "healthcheck starts an interpreter for each probe"})
-                growing_source = re.search(
+                growing_source = re.search(r"\b(?:readFile|read_text|readText|read_to_string)\s*\(", stripped) and re.search(
                     r"(?:jsonl|(?:^|[^A-Za-z0-9_])(?:audit|log)(?:File|_file|Path|_path|Log|_log|Jsonl)|(?:Audit|Log)(?:File|Path|Jsonl)|(?:^|[^A-Za-z0-9_])event(?:Log|_log|Jsonl)|Event(?:Log|Jsonl))",
                     stripped,
                 )
-                if re.search(r"\b(?:readFile|read_text|readText|read_to_string)\s*\(", stripped) and growing_source:
+                if growing_source:
                     findings.append({"code": "PERF-AUDIT-IO-001", "path": relative, "line": number, "message": "probable whole-file read on a growing event or audit source"})
                 if re.search(r"Promise\.all\s*\([^\n]*\.map\s*\(", stripped) and not re.search(r"\.slice\s*\(", stripped):
                     findings.append({"code": "PERF-AUDIT-CONCURRENCY-001", "path": relative, "line": number, "message": "mapped Promise.all has no visible local input bound"})
