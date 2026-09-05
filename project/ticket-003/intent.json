@@ -1,7 +1,7 @@
 {
   "schema": "new-project.intent/v3",
   "ticket": "ticket-003",
-  "summary": "Implement deterministic Performance conformance",
+  "summary": "Avoid unnecessary growing-source matching in repository audits",
   "workstream": "application",
   "classification": {
     "kind": "FEATURE",
@@ -9,35 +9,65 @@
     "origin": "requested"
   },
   "delivery": {
-    "acceptedBaseSha": "b9dfa473cf306b6998843cf5b4b5761291bfd95a",
+    "acceptedBaseSha": "1b9b259f90adc480257ec6a13df30d7be549db4d",
     "targetBranch": "main",
-    "outcome": "Provide deterministic Performance v1 validation and reversible local repository adoption across the canonical Wellmanifest inventory.",
+    "outcome": "Reduce redundant regex work in bounded repository audits while preserving exact findings; measure a fixed workload and real Wellmanifest repositories through Koru. Publish the bounded follow-up through exact-head protected Validator review and merge.",
     "nonGoals": [
-      "Edit tracked files in adopting repositories",
-      "Push, merge, deploy or access secrets",
-      "Index or mutate linked worktrees and deployment copies",
-      "Treat plan validation as execution authority"
+      "No authority or rule changes",
+      "No adopting repository source edits",
+      "No dependency or release changes"
     ],
     "complexity": "S",
     "estimatedMinutes": 25,
-    "budgets": {"maxImplementationFiles": 2, "maxAffectedComponents": 2, "maxPublicInterfaceChanges": 1, "maxRuntimeDependencies": 0},
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
     "architecture": {
       "status": "accepted",
-      "decision": "Use one dependency-free Python CLI for strict plan semantics and a marker-bounded local Git exclude adopter driven only by repos.manifest.",
+      "decision": "Short-circuit growing-source matching until a whole-file-read call is present; preserve existing regular expressions and sorted diagnostic output.",
       "components": [
-        {"name": "conformance-and-adopter", "paths": ["src/performance.py"]},
-        {"name": "adversarial-tests", "paths": ["tests/test_performance.py"]}
+        {
+          "name": "conformance-and-adopter",
+          "paths": [
+            "src/performance.py"
+          ]
+        },
+        {
+          "name": "adversarial-tests",
+          "paths": [
+            "tests/test_performance.py"
+          ]
+        }
       ],
       "responsibilityChanges": false,
-      "interfaceChanges": ["performance.py validate|adopt-local|check-local"],
+      "interfaceChanges": [],
       "dataChanges": [],
-      "ui": {"impact": "none", "states": [], "evidence": []},
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
       "rollback": "Run adopt-local --remove against the same manifest; only the marker-bounded block is removed."
     },
     "runtimeDependencies": [],
     "validation": [
-      {"criterion": "AC-01", "commands": ["python3 -m unittest discover -s tests -p 'test_performance.py' -v"], "evidence": "project/ticket-003/ai-codex-logs.txt"},
-      {"criterion": "AC-06", "commands": ["python3 src/performance.py check-local --workspace . --manifest repos.manifest"], "evidence": "project/ticket-003/ai-codex-logs.txt"}
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "python3 -m unittest discover -s tests -p 'test_performance.py' -v"
+        ],
+        "evidence": "project/ticket-003/ai-codex-logs.txt"
+      },
+      {
+        "criterion": "AC-06",
+        "commands": [
+          "python3 src/performance.py check-local --workspace . --manifest repos.manifest"
+        ],
+        "evidence": "project/ticket-003/ai-codex-logs.txt"
+      }
     ]
   },
   "allowedPaths": [
@@ -47,7 +77,9 @@
     "src/performance.py",
     "tests/test_performance.py"
   ],
-  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
   "stacks": [],
   "dependsOn": [],
   "conflictsWith": [],

@@ -6,3 +6,5 @@
 - [x] Add deterministic conformance, stable diagnostics, and adversarial fixtures.
 - [x] Document architecture, logic flow, adoption, and the Rust migration profile.
 - [ ] Validate governance and publish through trusted current-head review.
+
+- [x] Optimize repository audit matching with exact diagnostic parity and bounded Koru measurements (ticket-003).

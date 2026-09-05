@@ -3,7 +3,7 @@
 - **ID**: ticket-003
 - **Owner**: unresolved:human
 - **Status**: IN_PROGRESS
-- **Workflow state**: VALIDATION
+- **Workflow state**: PUBLICATION
 - **Created**: 2026-08-14
 
 ## Goal and scope
@@ -63,3 +63,7 @@ to a measured plan and contain paths/lines, never source values.
 - Static fleet audit receipt:
   `~/.local/state/wellmanifest-performance/audit-20260830.json`; 45 repositories
   scanned with generated/vendor/test trees excluded by default.
+
+## Continued audit optimization
+
+- [x] AC-07: Exact diagnostic parity on all selected Wellmanifest repositories and a mixed adversarial fixture; same workload performance budgets pass.
