@@ -1,17 +1,17 @@
 {
   "schema": "new-project.intent/v3",
   "ticket": "ticket-003",
-  "summary": "Avoid unnecessary growing-source matching in repository audits",
+  "summary": "Reject non-finite performance measurements and budgets",
   "workstream": "application",
   "classification": {
-    "kind": "FEATURE",
+    "kind": "BUG",
     "priority": "P1",
     "origin": "requested"
   },
   "delivery": {
-    "acceptedBaseSha": "1b9b259f90adc480257ec6a13df30d7be549db4d",
+    "acceptedBaseSha": "3573a263ec877bd5b67d462712e224742b69024b",
     "targetBranch": "main",
-    "outcome": "Reduce redundant regex work in bounded repository audits while preserving exact findings; measure a fixed workload and real Wellmanifest repositories through Koru. Publish the bounded follow-up through exact-head protected Validator review and merge.",
+    "outcome": "Reject NaN, infinity and overflowed numeric inputs with stable diagnostics while preserving finite performance plans and adding regression tests; publish this bounded slice through a ticket PR and independent exact-head protected review and merge.",
     "nonGoals": [
       "No authority or rule changes",
       "No adopting repository source edits",
@@ -27,7 +27,7 @@
     },
     "architecture": {
       "status": "accepted",
-      "decision": "Short-circuit growing-source matching until a whole-file-read call is present; preserve existing regular expressions and sorted diagnostic output.",
+      "decision": "Use one bounded finite-number predicate before numeric comparison, reject JSON exponent overflow during parsing, and preserve existing stable diagnostic identifiers.",
       "components": [
         {
           "name": "conformance-and-adopter",
@@ -50,7 +50,7 @@
         "states": [],
         "evidence": []
       },
-      "rollback": "Run adopt-local --remove against the same manifest; only the marker-bounded block is removed."
+      "rollback": "Restore the prior validator artifact if required; no adopter excludes or production state are changed. Retain the new negative fixtures as evidence of the known older defect."
     },
     "runtimeDependencies": [],
     "validation": [
@@ -62,11 +62,13 @@
         "evidence": "project/ticket-003/ai-codex-logs.txt"
       },
       {
-        "criterion": "AC-06",
+        "criterion": "AC-08",
         "commands": [
-          "python3 src/performance.py check-local --workspace . --manifest repos.manifest"
+          "python3 -m unittest discover -s tests -p 'test_performance.py' -v",
+          "./project/governance-check.sh --actor agent",
+          "git diff --check"
         ],
-        "evidence": "project/ticket-003/ai-codex-logs.txt"
+        "evidence": "External continuation audit with 15-test result and scoped governance report; no runtime adoption claim."
       }
     ]
   },

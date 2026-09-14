@@ -67,3 +67,18 @@ to a measured plan and contain paths/lines, never source values.
 ## Continued audit optimization
 
 - [x] AC-07: Exact diagnostic parity on all selected Wellmanifest repositories and a mixed adversarial fixture; same workload performance budgets pass.
+
+## Numeric validation continuation — 2026-09-14
+
+This new local slice resumes the existing validator scope after the integrated
+audit optimization; prior publication observations above are historical.
+No adopter deployment or local-exclude update is part of this continuation.
+
+- [x] AC-08: NaN, infinities, overflowing integers and booleans are rejected at
+      baseline, candidate, threshold and control boundaries with stable codes.
+- [x] AC-09: JSON exponent overflow returns input failure without echoing the
+      value; finite exponent notation and a zero control remain accepted.
+- [x] AC-10: All 15 dependency-free tests and the scoped governance gate pass.
+
+The standard's grammar/prose changes are separately owned by ticket-002.
+Local validation is not trusted review, publication or production verification.
