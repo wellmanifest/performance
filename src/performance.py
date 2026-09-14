@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import re
 import tempfile
@@ -92,6 +93,23 @@ class InvalidJsonNumber(ValueError):
     pass
 
 
+def finite_number(value: Any) -> bool:
+    """Reject booleans and values outside the runtime's finite numeric domain."""
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        return False
+    try:
+        return math.isfinite(value)
+    except OverflowError:
+        return False
+
+
+def finite_json_float(value: str) -> float:
+    number = float(value)
+    if not finite_number(number):
+        raise InvalidJsonNumber("non-finite JSON number")
+    return number
+
+
 def strict_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key, value in pairs:
@@ -107,6 +125,7 @@ def load_plan(path: Path) -> Any:
     return json.loads(
         text,
         object_pairs_hook=strict_pairs,
+        parse_float=finite_json_float,
         parse_constant=lambda value: (_ for _ in ()).throw(InvalidJsonNumber(value)),
     )
 
@@ -153,7 +172,7 @@ def metric_map(value: Any, path: str, findings: list[dict[str, str]]) -> dict[st
             continue
         if name in result:
             findings.append(finding("PERF-METRIC-003", f"{item_path}.name", "metric name is duplicated"))
-        if unit not in UNITS or not isinstance(number, (int, float)) or isinstance(number, bool):
+        if unit not in UNITS or not finite_number(number):
             findings.append(finding("PERF-METRIC-004", item_path, "metric unit or value is invalid"))
             continue
         result[name] = (unit, float(number))
@@ -217,7 +236,7 @@ def validate_plan(plan: Any) -> list[dict[str, str]]:
                 findings.append(finding("PERF-BUDGET-002", item_path, "budget metric or unit is not comparable"))
                 continue
             threshold, value = item["threshold"], candidate[name][1]
-            if not isinstance(threshold, (int, float)) or isinstance(threshold, bool) or item["comparison"] not in {"at_most", "at_least"}:
+            if not finite_number(threshold) or item["comparison"] not in {"at_most", "at_least"}:
                 findings.append(finding("PERF-BUDGET-003", item_path, "budget comparison or threshold is invalid"))
             elif (item["comparison"] == "at_most" and value > threshold) or (item["comparison"] == "at_least" and value < threshold):
                 findings.append(finding("PERF-BUDGET-004", item_path, "candidate fails budget"))
@@ -237,7 +256,7 @@ def validate_plan(plan: Any) -> list[dict[str, str]]:
             else:
                 observed_controls.add(item["kind"])
             limit = item["limit"]
-            if not isinstance(limit, (int, float)) or isinstance(limit, bool) or limit < 0 or limit in {float("inf"), float("-inf")}:
+            if not finite_number(limit) or limit < 0:
                 findings.append(finding("PERF-CONTROL-003", f"{item_path}.limit", "control limit must be finite and non-negative"))
             for key in ("target", "mechanism", "verification", "exception"):
                 if not isinstance(item[key], str) or (key != "exception" and not item[key].strip()):

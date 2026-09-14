@@ -102,6 +102,43 @@ class PlanTests(unittest.TestCase):
         self.assertEqual(performance.validate_plan(plan), performance.validate_plan(plan))
         self.assertIn("PERF-INVARIANT-003", {item["code"] for item in performance.validate_plan(plan)})
 
+    def test_non_finite_numbers_fail_every_comparison_boundary(self):
+        cases = [
+            ("baseline", "PERF-METRIC-004"),
+            ("candidate", "PERF-METRIC-004"),
+            ("threshold", "PERF-BUDGET-003"),
+            ("limit", "PERF-CONTROL-003"),
+        ]
+        for target, expected in cases:
+            for number in (float("nan"), float("inf"), float("-inf"), 10 ** 1000, True):
+                with self.subTest(target=target, numeric_type=type(number).__name__):
+                    plan = valid_plan()
+                    if target in {"baseline", "candidate"}:
+                        plan[target]["metrics"][0]["value"] = number
+                    elif target == "threshold":
+                        plan["budgets"][0]["threshold"] = number
+                    else:
+                        plan["controls"][0]["limit"] = number
+                    self.assertIn(expected, {item["code"] for item in performance.validate_plan(plan)})
+
+    def test_json_exponent_overflow_is_input_failure_without_value_echo(self):
+        for number in ("1e999", "-1e999"):
+            with self.subTest(number=number), tempfile.TemporaryDirectory() as directory:
+                path = Path(directory) / "plan.json"
+                path.write_text(json.dumps(valid_plan()).replace('"threshold": 60', '"threshold": ' + number))
+                result = subprocess.run([sys.executable, str(MODULE_PATH), "validate", str(path)], capture_output=True, text=True, check=False)
+                self.assertEqual(1, result.returncode)
+                self.assertIn("PERF-JSON-001", result.stdout)
+                self.assertNotIn(number, result.stdout)
+
+    def test_finite_exponent_and_zero_control_remain_valid(self):
+        plan = valid_plan()
+        plan["controls"][0]["limit"] = 0
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "plan.json"
+            path.write_text(json.dumps(plan).replace('"threshold": 60', '"threshold": 6e1'))
+            self.assertEqual([], performance.validate_plan(performance.load_plan(path)))
+
 
 class AdoptionTests(unittest.TestCase):
     def fixture(self, root):
