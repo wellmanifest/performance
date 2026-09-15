@@ -8,3 +8,7 @@
 - [ ] Validate governance and publish through trusted current-head review.
 
 - [x] Optimize repository audit matching with exact diagnostic parity and bounded Koru measurements (ticket-003).
+
+## Automatic Planfile synchronization — 2026-09-15
+
+- [x] Add the reusable GitHub Actions caller workflow pinned to `v0.1.126` — ticket-005.
