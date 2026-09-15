@@ -1,0 +1,3 @@
+planfile sync rollout: scaffold, intent scope, workflow, governance check, commit, push, PR
+planfile rollout: scaffold, bounded intent, workflow, gate, commit and PR
+planfile rollout: scaffold, bounded intent, workflow, gate, commit and PR

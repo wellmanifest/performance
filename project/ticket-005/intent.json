@@ -1,0 +1,74 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-005",
+  "summary": "Add the standard automatic Planfile GitHub synchronization workflow.",
+  "workstream": "infrastructure",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P1",
+    "origin": "requested"
+  },
+  "allowedPaths": [
+    ".github/workflows/planfile-github-sync.yml",
+    "TODO.md",
+    "project/TICKETS.md",
+    "project/ticket-005/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "0fbf213c6c9b0e103e228496e879cc3ff9a21f09",
+    "targetBranch": "main",
+    "outcome": "The repository gets a pinned, scheduled Planfile GitHub Issue synchronization caller workflow.",
+    "nonGoals": [
+      "Change application source behavior.",
+      "Add runtime dependencies.",
+      "Modify human-owned ticket input."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Use the shared Planfile reusable workflow pinned to the published release and grant only contents read plus issues write.",
+      "components": [
+        {
+          "name": "github-planfile-sync",
+          "paths": [
+            ".github/workflows/planfile-github-sync.yml"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Remove the caller workflow; repository application files remain unchanged."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "./project/governance-check.sh",
+          "git diff --check"
+        ],
+        "evidence": "The bounded ticket and workflow pass the repository governance gate."
+      }
+    ]
+  }
+}
