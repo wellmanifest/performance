@@ -1,0 +1,19 @@
+{
+  "schema": "subactor.intent/v1",
+  "ticket": "ticket-006",
+  "title": "Pin planfile sync reusable workflow to immutable SHA",
+  "workstream": "security",
+  "allowedPaths": [
+    ".github/workflows/planfile-github-sync.yml",
+    "project/ticket-006/**"
+  ],
+  "authorization": "SESSION_EXECUTION_AUTHORIZATION",
+  "delivery": {
+    "problem": "The Planfile GitHub sync workflow references semcod/planfile/.github/workflows/planfile-sync-reusable.yml by the mutable tag v0.1.126 while holding issues:write on an hourly schedule. A moved tag or compromised upstream repository could execute arbitrary code with issue-writing access.",
+    "change": "Pin the reusable workflow reference to the immutable commit SHA e79d79509c050514ba434c3bd6589f932b91c920 (the commit the v0.1.126 tag points at), keeping the version in a trailing comment.",
+    "acceptance": [
+      "The workflow uses-action references e79d79509c050514ba434c3bd6589f932b91c920 and retains a v0.1.126 version comment.",
+      "No other workflow behavior changes."
+    ]
+  }
+}
