@@ -1,0 +1,115 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-007",
+  "summary": "Adopt wellmanifest/new-project 0.20.32 managed package refresh and fleet alignment",
+  "workstream": "governance",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-007/**",
+    "project/ticket-006/README.md",
+    "TODO.md",
+    "project/TICKETS.md",
+    ".aider.conf.yml",
+    ".cursor/rules/new-project-standard.mdc",
+    ".github/copilot-instructions.md",
+    ".github/workflows/new-project-governance.yml",
+    ".governance/**",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "project/new-ticket.sh",
+    "project/governance-check.sh",
+    "project/governance-check.bat",
+    "scripts/install-agent-hosts.sh",
+    ".gitignore",
+    "CHANGELOG.md",
+    ".env.example",
+    "goal.yaml",
+    "project.bat",
+    "project.sh",
+    "scripts/runtime.sh",
+    "wellmanifest_governance.py",
+    "worktree-guard.yaml",
+    ".subactor/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "913f69b02b1db80f14ab23582b75472a2052e820",
+    "targetBranch": "main",
+    "outcome": "Adopt verified wellmanifest/new-project 0.20.32 package and align fleet instance identity.",
+    "nonGoals": [
+      "No hand-edited managed files or lock digests",
+      "No product runtime behavior changes"
+    ],
+    "complexity": "L",
+    "estimatedMinutes": 60,
+    "standardAdoption": {
+      "sourceRepository": "wellmanifest/new-project",
+      "fromRevision": "4d0a61837245b2906ce19c75c050fea1bc12adf2",
+      "toRevision": "b6ba9c21a65a6a5648ecf904b64c3b75295e136f"
+    },
+    "budgets": {
+      "maxImplementationFiles": 15,
+      "maxAffectedComponents": 3,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Adopt the verified new-project 0.20.32 governance release via create_adoption_lock and update required-checks instance.",
+      "components": [
+        {
+          "name": "managed-governance-package",
+          "paths": [
+            ".governance/**",
+            "AGENTS.md",
+            "CLAUDE.md",
+            "GEMINI.md",
+            ".aider.conf.yml",
+            ".cursor/rules/new-project-standard.mdc",
+            ".github/copilot-instructions.md",
+            ".github/workflows/new-project-governance.yml",
+            "project/new-ticket.sh",
+            "project/governance-check.sh",
+            "project/governance-check.bat",
+            "scripts/install-agent-hosts.sh",
+            "scripts/runtime.sh",
+            "wellmanifest_governance.py",
+            "worktree-guard.yaml",
+            ".gitignore",
+            ".subactor/**"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert to previous accepted revision."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "python3 .governance/governance_check.py"
+        ],
+        "evidence": "Local governance gate passes."
+      }
+    ]
+  }
+}
