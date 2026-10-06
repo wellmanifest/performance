@@ -1,6 +1,7 @@
 root ::= "{" ws schema comma subject comma profiles comma workload-field comma baseline comma candidate comma budgets comma controls comma invariants comma strategy comma rollout comma rollback comma authority ws "}"
 schema ::= q "schema" q colon q "performance.plan/v1" q
-subject ::= q "subject" q colon "{" ws q "repository" q colon identifier comma q "revision" q colon sha40 comma q "component" q colon safe-string ws "}"
+subject ::= q "subject" q colon "{" ws q "repository" q colon repository comma q "revision" q colon sha40 comma q "component" q colon safe-string ws "}"
+repository ::= q [A-Za-z0-9_.-]+ "/" [A-Za-z0-9_.-]+ q
 profiles ::= q "profiles" q colon "[" ws profile (comma profile)* ws "]"
 profile ::= q ("repository" | "developer-workstation" | "runtime-service" | "high-throughput-runtime") q
 workload-field ::= q "workload" q colon workload

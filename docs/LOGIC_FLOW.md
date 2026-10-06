@@ -5,10 +5,13 @@
 1. Pin an immutable `wellmanifest/performance` revision.
 2. Start in audit mode and classify repository/runtime profiles.
 3. Capture a representative baseline before changing code or configuration.
-4. Create a `performance.plan/v1` document and run offline conformance.
-5. Obtain the adopter's normal execution authority, then apply only the plan's
-   bounded change.
-6. Measure with the same workload and accept, reject or roll back.
+4. Authorize a bounded experiment through the adopter's task contract, then
+   measure the isolated candidate with the same workload. Never fabricate
+   candidate data merely to obtain a valid plan before the experiment.
+5. Create the measured `performance.plan/v1` proposal, run offline conformance
+   and verify the referenced evidence and invariant results independently.
+6. Under the adopter's rollout authority, accept or reject the candidate;
+   observe the bounded deployment and verify or roll back.
 7. Store a digest-bound receipt and enable enforcement only after the local
    check is stable.
 

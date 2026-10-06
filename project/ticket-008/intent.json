@@ -1,0 +1,77 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-008",
+  "summary": "Autonomous organism evolution and cognitive controls",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "allowedPaths": [
+    "project/ticket-008/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "docs/LOGIC_FLOW.md",
+    "docs/PERFORMANCE.md",
+    "docs/performance-plan.v1.gbnf",
+    "project/ticket-007/README.md"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "ef5e8d95c4408d740e40f6390eb9f6954ee75737",
+    "targetBranch": "main",
+    "outcome": "Standardize autonomous organism evolution, cognitive controls, and GBNF repository production in Performance v1.",
+    "nonGoals": [
+      "No breaking schema changes",
+      "No runtime provider changes"
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 20,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add evolutionary and cognitive performance invariants to normative documentation and fix grammar repository production.",
+      "components": [
+        {
+          "name": "performance-standard",
+          "paths": [
+            "docs/LOGIC_FLOW.md",
+            "docs/PERFORMANCE.md",
+            "docs/performance-plan.v1.gbnf"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert documentation and grammar changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "python3 .governance/governance_check.py"
+        ],
+        "evidence": "Governance check passes with 0 errors."
+      }
+    ]
+  }
+}
