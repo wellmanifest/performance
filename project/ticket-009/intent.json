@@ -1,0 +1,75 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-009",
+  "summary": "Add AST performance and resource-leak detectors to audit-repository",
+  "workstream": "application",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-009/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/performance.py",
+    "tests/test_performance.py",
+    ".governance/standard-adoption.json"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "7cf5b52b0a0f34f469e46f4ae15744951cd36249",
+    "targetBranch": "main",
+    "outcome": "Extend audit_repository with AST and source detectors for SQLite N+1/connection/PRAGMA leaks, subprocesses in loops, cleanup sleeps, uncached YAML/AST parses in loops, and dead/unwired optional parameters.",
+    "nonGoals": [
+      "No breaking CLI or schema changes"
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 20,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add AST-based Python analysis and Rust cleanup sleep detection to audit_repository in src/performance.py.",
+      "components": [
+        {
+          "name": "performance-auditor",
+          "paths": [
+            "src/performance.py",
+            "tests/test_performance.py"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert AST detector additions in src/performance.py and tests/test_performance.py."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "pytest -q",
+          "./project/governance-check.sh"
+        ],
+        "evidence": "All unit tests and governance checks pass with 0 errors."
+      }
+    ]
+  }
+}

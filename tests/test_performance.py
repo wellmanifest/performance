@@ -238,6 +238,154 @@ class RepositoryAuditTests(unittest.TestCase):
             [('PERF-AUDIT-IO-001', line) for line in range(1, 5)],
         )
 
+    def test_detects_sqlite_anti_patterns_and_accepts_safe_forms(self):
+        buggy = (
+            "import sqlite3\n"
+            "from contextlib import closing\n\n"
+            "def bad_queries(db_path, items, executor, session, pg_client):\n"
+            "    pg_cur = pg_client.cursor()\n"
+            "    with sqlite3.connect(db_path) as conn:\n"
+            "        try:\n"
+            "            conn.execute('PRAGMA synchronous=FULL')\n"
+            "        finally:\n"
+            "            _ = 'PRAGMA synchronous=NORMAL'\n"
+            "        for item in items:\n"
+            "            executor.execute(item)\n"
+            "            session.execute('SELECT 1')\n"
+            "            pg_cur.execute('SELECT 1')\n"
+            "            conn.execute('INSERT INTO t VALUES (?)', (item,))\n"
+        )
+        safe = (
+            "import sqlite3\n"
+            "from contextlib import closing\n\n"
+            "def good_queries(db_path, items, executor, session, pg_client):\n"
+            "    pg_cur = pg_client.cursor()\n"
+            "    for item in items:\n"
+            "        executor.execute(item)\n"
+            "        session.execute('SELECT 1')\n"
+            "        pg_cur.execute('SELECT 1')\n"
+            "    with closing(sqlite3.connect(db_path)) as conn:\n"
+            "        try:\n"
+            "            conn.execute('PRAGMA synchronous=FULL')\n"
+            "            conn.executemany('INSERT INTO t VALUES (?)', [(i,) for i in items])\n"
+            "        except Exception:\n"
+            "            conn.execute('PRAGMA synchronous=FULL')\n"
+            "        else:\n"
+            "            conn.execute('PRAGMA synchronous=FULL')\n"
+            "        finally:\n"
+            "            conn.execute('PRAGMA synchronous=NORMAL')\n"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "buggy.py").write_text(buggy)
+            (root / "safe.py").write_text(safe)
+            findings = performance.audit_repository(root)
+        self.assertEqual(
+            [
+                ("PERF-AUDIT-SQLITE-001", "buggy.py", 15),
+                ("PERF-AUDIT-SQLITE-002", "buggy.py", 6),
+                ("PERF-AUDIT-SQLITE-003", "buggy.py", 8),
+            ],
+            [(item["code"], item["path"], item["line"]) for item in findings],
+        )
+
+    def test_detects_subprocess_and_parse_in_loops(self):
+        code = (
+            "import ast\n"
+            "import subprocess\n"
+            "import yaml\n\n"
+            "def scan(paths):\n"
+            "    for p in paths:\n"
+            "        subprocess.run(['git', 'status', str(p)], check=False)\n"
+            "        yaml.safe_load(p.read_text())\n"
+            "    return [ast.parse(p.read_text()) for p in paths]\n"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "scanner.py").write_text(code)
+            findings = performance.audit_repository(root)
+        self.assertEqual(
+            [
+                ("PERF-AUDIT-PARSE-001", 8),
+                ("PERF-AUDIT-PARSE-001", 9),
+                ("PERF-AUDIT-SUBPROC-001", 7),
+            ],
+            [(item["code"], item["line"]) for item in findings],
+        )
+
+    def test_detects_unconditional_cleanup_sleep_in_python_and_rust(self):
+        py_code = (
+            "import time\n\n"
+            "def run_session(proc):\n"
+            "    try:\n"
+            "        proc.wait()\n"
+            "    finally:\n"
+            "        time.sleep(0.2)\n\n"
+            "def _stop_existing_container(name):\n"
+            "    time.sleep(2)\n"
+            "    return name\n\n"
+            "def _stop_bounded(proc):\n"
+            "    while proc.poll() is None:\n"
+            "        time.sleep(0.05)\n"
+        )
+        rs_code = (
+            "pub fn cleanup_group(pgid: i32) {\n"
+            "    let alive = kill_group(pgid, libc::SIGTERM);\n"
+            "    while false {\n"
+            "        std::thread::sleep(std::time::Duration::from_millis(5));\n"
+            "    }\n"
+            "    if alive {\n"
+            "        std::thread::sleep(std::time::Duration::from_millis(5));\n"
+            "    }\n"
+            "    std::thread::sleep(std::time::Duration::from_millis(100));\n"
+            "    let _ = kill_group(pgid, libc::SIGKILL);\n"
+            "}\n"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "runner.py").write_text(py_code)
+            (root / "runner.rs").write_text(rs_code)
+            findings = performance.audit_repository(root)
+        self.assertEqual(
+            [
+                ("PERF-AUDIT-SLEEP-001", "runner.py", 7),
+                ("PERF-AUDIT-SLEEP-001", "runner.py", 10),
+                ("PERF-AUDIT-SLEEP-001", "runner.rs", 9),
+            ],
+            [(item["code"], item["path"], item["line"]) for item in findings],
+        )
+
+    def test_detects_dead_and_unwired_optional_parameters(self):
+        code = (
+            "def _collect(items, *, limit=None):\n"
+            "    if limit is not None and limit > 1:\n"
+            "        return _collect(items, limit=limit - 1)\n"
+            "    return items[:limit] if limit else items\n\n"
+            "def public_api(items, other, *, unused_flag=False):\n"
+            "    def _collect(x, *, limit=5):\n"
+            "        return x[:limit]\n"
+            "    _collect(items, limit=3)\n"
+            "    return other._collect(items, limit=10)\n\n"
+            "def caller_api(items):\n"
+            "    return _collect(items)\n\n"
+            "def posonly_fn(used=1, unused_posonly=2, /):\n"
+            "    return used\n"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "api.py").write_text(code)
+            findings = performance.audit_repository(root)
+        self.assertEqual(
+            [
+                ("PERF-AUDIT-KWARG-001", 1),
+                ("PERF-AUDIT-KWARG-001", 6),
+                ("PERF-AUDIT-KWARG-001", 15),
+            ],
+            [(item["code"], item["line"]) for item in findings],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
+
+
