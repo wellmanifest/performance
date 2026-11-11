@@ -1,0 +1,76 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-010",
+  "summary": "Modularize performance validator and harden schema parity and symlink safety",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-010/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/**",
+    "tests/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "db5801c85f8a02a836ae7248aec2b3fcb1ae6345",
+    "targetBranch": "main",
+    "outcome": "Decompose src/performance.py into focused <500-line modules, eliminate unhashable TypeError crashes, enforce JSON Schema v1 parity in validate_plan, and harden symlink and fsync safety.",
+    "nonGoals": [
+      "No breaking CLI or wire schema changes"
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 25,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Split plan validation into src/performance_plan.py and static AST/Rust analyzers into src/performance_ast.py while keeping src/performance.py as the backward-compatible CLI and API facade.",
+      "components": [
+        {
+          "name": "performance-validator",
+          "paths": [
+            "src/performance.py",
+            "src/performance_plan.py",
+            "src/performance_ast.py",
+            "tests/test_performance_hardening.py"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert modularization and hardening commits on src/ and tests/."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-04",
+        "commands": [
+          "python3 -m unittest discover -s tests",
+          "./project/governance-check.sh"
+        ],
+        "evidence": "All unit tests, ruff checks, governance-check.sh, and wellman check pass with 0 errors."
+      }
+    ]
+  }
+}
